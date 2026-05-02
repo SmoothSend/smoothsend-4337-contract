@@ -1,0 +1,27 @@
+{
+  "name": "@smoothsend/avax-contracts",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Avalanche C-Chain ERC-4337 contracts and deployment scripts for SmoothSend.",
+  "scripts": {
+    "postinstall": "node scripts/remap-account-abstraction.cjs",
+    "build": "hardhat compile",
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "deploy:fuji": "hardhat run scripts/deploy.ts --network avalancheFuji",
+    "deploy:mainnet": "hardhat run scripts/deploy.ts --network avalancheMainnet"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^6.1.2",
+    "@types/node": "latest",
+    "hardhat": "^2.28.6",
+    "ts-node": "latest",
+    "typescript": "latest"
+  },
+  "dependencies": {
+    "@account-abstraction/contracts": "^0.7.0",
+    "@openzeppelin/contracts": "latest",
+    "dotenv": "^17.4.2",
+    "solady": "^0.1.26"
+  }
+}
