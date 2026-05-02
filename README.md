@@ -53,3 +53,22 @@ Required env vars before deployment:
 npm run deploy:fuji
 npm run deploy:mainnet
 ```
+
+## Deployed Addresses
+
+### Avalanche Fuji (Testnet)
+
+- EntryPoint v0.7: `0x0000000071727De22E5E9d8BAf0edAc6f37da032`
+- VerifyingPaymaster: `0x3207f577792F9d549acB2A6C97c0f74EAeB166d8`
+- Verifying signer used at deploy time: `0x84c2f35807fC555C4A06cC12Dc0aAf9d948FeE1d`
+
+Bundler/gateway env for Fuji:
+
+```bash
+AVAX_CHAIN_ID=43113
+ENTRYPOINT_V07=0x0000000071727De22E5E9d8BAf0edAc6f37da032
+PAYMASTER_ADDRESS=0x3207f577792F9d549acB2A6C97c0f74EAeB166d8
+VERIFYING_SIGNER=0x84c2f35807fC555C4A06cC12Dc0aAf9d948FeE1d
+```
+
+Note: deployment was done with `INITIAL_PAYMASTER_DEPOSIT_AVAX=0`, so fund the paymaster deposit before running sponsored UserOps.
