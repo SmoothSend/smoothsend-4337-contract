@@ -2,6 +2,8 @@
 
 Fresh Avalanche C-Chain ERC-4337 contract workspace.
 
+This folder owns the on-chain AVAX 4337 deployment state (paymaster + references). Runtime API behavior is implemented by `chains/avax/bundler`.
+
 ## Upstream Sources
 
 This repository is intended to stay public and clearly attribute upstream contract sources.
@@ -61,6 +63,10 @@ npm run deploy:mainnet
 - EntryPoint v0.7: `0x0000000071727De22E5E9d8BAf0edAc6f37da032`
 - VerifyingPaymaster: `0x3207f577792F9d549acB2A6C97c0f74EAeB166d8`
 - Verifying signer used at deploy time: `0x84c2f35807fC555C4A06cC12Dc0aAf9d948FeE1d`
+- Bundler EOA (submits `handleOps`): `0x84c2f35807fC555C4A06cC12Dc0aAf9d948FeE1d`
+
+> Note: the bundler is an off-chain service + EOA, not a smart contract.  
+> The on-chain contract address is the paymaster (`0x3207...66d8`), while `0x84c2...FeE1d` is the EOA that broadcasts `EntryPoint.handleOps(...)`.
 
 Bundler/gateway env for Fuji:
 
@@ -72,3 +78,31 @@ VERIFYING_SIGNER=0x84c2f35807fC555C4A06cC12Dc0aAf9d948FeE1d
 ```
 
 Note: deployment was done with `INITIAL_PAYMASTER_DEPOSIT_AVAX=0`, so fund the paymaster deposit before running sponsored UserOps.
+
+## AVAX Bundler API (for gateway wiring)
+
+Bundler implementation is in `chains/avax/bundler`.
+
+All gateway-facing routes:
+
+- `POST /` — ERC-4337 JSON-RPC
+  - `eth_chainId`
+  - `eth_supportedEntryPoints`
+  - `eth_estimateUserOperationGas`
+  - `eth_sendUserOperation`
+  - `eth_getUserOperationByHash`
+  - `eth_getUserOperationReceipt`
+- `POST /api/v1/bundler/paymaster/sign` — sign `paymasterAndData`
+- `GET /api/v1/bundler/health` — health + paused status
+- `GET /api/v1/bundler/balance` — bundler EOA balance + paymaster EntryPoint deposit
+- `GET /api/v1/bundler/safety-check` — run immediate safety check
+- `GET /metrics` — Prometheus metrics
+- `GET /stats` — service metrics summary
+- `GET /ping` — liveness
+
+Security model matches Aptos relayer:
+
+1. Public traffic enters through Cloudflare Worker only.
+2. Worker forwards to bundler with `X-Gateway-Secret`.
+3. Bundler validates `X-Gateway-Secret` for non-health routes.
+4. Infrastructure should also firewall bundler ingress to Cloudflare IP ranges only.
