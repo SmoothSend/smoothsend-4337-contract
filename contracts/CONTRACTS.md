@@ -44,9 +44,10 @@ The vendored Coinbase/Base paymaster supports both SmoothSend launch modes.
 
 Optional later:
 
-- `SimpleAccountFactory`
-  - Needed only if SmoothSend deploys its own demo/default smart accounts.
-  - Must come from a v0.7-compatible source. Do not mix v0.8 account/factory contracts into the v0.7 launch stack.
+- `SimpleAccountFactory` (+ sample `SimpleAccount`)
+  - Needed for counterfactual SCW deploy via UserOp (`factory` / `factoryData`).
+  - Vendored from **`@account-abstraction/contracts@0.7.0`** samples at `contracts/vendor/eth-infinitism/samples/` (same logic; import paths adjusted for Hardhat remappings).
+  - Deploy: `npm run deploy:simple-account-factory:fuji` (see repo `README.md`).
 
 ## Do Not Use For This v0.7 Launch Path
 

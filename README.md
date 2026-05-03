@@ -51,16 +51,32 @@ Required env vars before deployment:
 
 ## Deploy
 
+### VerifyingPaymaster
+
 ```bash
 npm run deploy:fuji
 npm run deploy:mainnet
 ```
+
+### SimpleAccountFactory (eth-infinitism `@account-abstraction/contracts` v0.7 samples)
+
+Vendored unchanged except `SimpleAccount.sol` core imports use `@account-abstraction/core/*` so Hardhat avoids duplicate source paths (`contracts/vendor/eth-infinitism/samples/`).
+
+```bash
+npm run deploy:simple-account-factory:fuji
+npm run deploy:simple-account-factory:mainnet
+```
+
+Uses `DEPLOYER_PRIVATE_KEY`, `ENTRYPOINT_V07` (defaults to canonical v0.7), and pays normal Fuji/mainnet AVAX gas for one transaction (factory constructor deploys `SimpleAccount` impl + factory).
+
+After deploy, set **`AVAX_FUJI_SIMPLE_ACCOUNT_FACTORY`** on the Worker and redeploy gateway so `GET /api/v1/public/avax-aa-defaults` returns the address.
 
 ## Deployed Addresses
 
 ### Avalanche Fuji (Testnet)
 
 - EntryPoint v0.7: `0x0000000071727De22E5E9d8BAf0edAc6f37da032`
+- SimpleAccountFactory (samples / `@account-abstraction/contracts` v0.7): `0x55326f005a0959F75496cdd692505fFB520972f5`
 - VerifyingPaymaster: `0x3207f577792F9d549acB2A6C97c0f74EAeB166d8`
 - Verifying signer used at deploy time: `0x84c2f35807fC555C4A06cC12Dc0aAf9d948FeE1d`
 - Bundler EOA (submits `handleOps`): `0x84c2f35807fC555C4A06cC12Dc0aAf9d948FeE1d`
@@ -68,14 +84,18 @@ npm run deploy:mainnet
 > Note: the bundler is an off-chain service + EOA, not a smart contract.  
 > The on-chain contract address is the paymaster (`0x3207...66d8`), while `0x84c2...FeE1d` is the EOA that broadcasts `EntryPoint.handleOps(...)`.
 
-Bundler/gateway env for Fuji:
+Bundler / gateway references for Fuji:
 
 ```bash
 AVAX_CHAIN_ID=43113
 ENTRYPOINT_V07=0x0000000071727De22E5E9d8BAf0edAc6f37da032
 PAYMASTER_ADDRESS=0x3207f577792F9d549acB2A6C97c0f74EAeB166d8
 VERIFYING_SIGNER=0x84c2f35807fC555C4A06cC12Dc0aAf9d948FeE1d
+# Cloudflare Worker (`wrangler.toml` / dashboard): public AA defaults for SDK frontends
+AVAX_FUJI_SIMPLE_ACCOUNT_FACTORY=0x55326f005a0959F75496cdd692505fFB520972f5
 ```
+
+`POST …/paymaster/sign` returns **`paymasterAndData`** (paymaster address + encoded **`paymasterData`** + **65-byte ECDSA** from **`VERIFYING_SIGNER`**). Your snippet is a successful **developer-sponsored** quote (`token` and **`receiver`** zero = native sponsor path): **`validUntil` / `validAfter`** bound signature freshness; **`success: true`** means the bundler can attach this blob to the UserOp and submit.
 
 Note: deployment was done with `INITIAL_PAYMASTER_DEPOSIT_AVAX=0`, so fund the paymaster deposit before running sponsored UserOps.
 

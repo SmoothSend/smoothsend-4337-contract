@@ -9,7 +9,9 @@
     "compile": "hardhat compile",
     "test": "hardhat test",
     "deploy:fuji": "hardhat run scripts/deploy.ts --network avalancheFuji",
-    "deploy:mainnet": "hardhat run scripts/deploy.ts --network avalancheMainnet"
+    "deploy:mainnet": "hardhat run scripts/deploy.ts --network avalancheMainnet",
+    "deploy:simple-account-factory:fuji": "hardhat run scripts/deploySimpleAccountFactory.ts --network avalancheFuji",
+    "deploy:simple-account-factory:mainnet": "hardhat run scripts/deploySimpleAccountFactory.ts --network avalancheMainnet"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^6.1.2",
