@@ -73,6 +73,8 @@ After deploy, set **`AVAX_FUJI_SIMPLE_ACCOUNT_FACTORY`** on the Worker and redep
 
 ## Deployed Addresses
 
+See **[DEPLOYMENTS.md](./DEPLOYMENTS.md)** for the full deployment record with Snowtrace explorer links and verification status.
+
 ### Avalanche Fuji (Testnet)
 
 - EntryPoint v0.7: `0x0000000071727De22E5E9d8BAf0edAc6f37da032`
@@ -93,6 +95,26 @@ PAYMASTER_ADDRESS=0x3207f577792F9d549acB2A6C97c0f74EAeB166d8
 VERIFYING_SIGNER=0x84c2f35807fC555C4A06cC12Dc0aAf9d948FeE1d
 # Cloudflare Worker (`wrangler.toml` / dashboard): public AA defaults for SDK frontends
 AVAX_FUJI_SIMPLE_ACCOUNT_FACTORY=0x55326f005a0959F75496cdd692505fFB520972f5
+```
+
+### Avalanche C-Chain (Mainnet)
+
+- EntryPoint v0.7: `0x0000000071727De22E5E9d8BAf0edAc6f37da032`
+- SimpleAccountFactory: `0x863b8E15D37Abf33d5177108f6a07D541a698D25`
+- VerifyingPaymaster: `0x25FF7720cff5E7c479CAd2A8b48F99561F7C8df9`
+- Verifying signer: `0x28738746aAAFd124F8796d916dc5d9F07D8d7B7b`
+- Owner: `0x98f997E1F7033E06aa2b0e33e9E3CA110a3DB34b`
+- Deployer: `0x7264bE2A52A9cC9401d76378BCC6C0Be6De3A6d9`
+
+Bundler / gateway references for mainnet:
+
+```bash
+AVAX_CHAIN_ID=43114
+ENTRYPOINT_V07=0x0000000071727De22E5E9d8BAf0edAc6f37da032
+PAYMASTER_ADDRESS=0x25FF7720cff5E7c479CAd2A8b48F99561F7C8df9
+VERIFYING_SIGNER=0x28738746aAAFd124F8796d916dc5d9F07D8d7B7b
+AVAX_MAINNET_SIMPLE_ACCOUNT_FACTORY=0x863b8E15D37Abf33d5177108f6a07D541a698D25
+AVAX_MAINNET_PAYMASTER=0x25FF7720cff5E7c479CAd2A8b48F99561F7C8df9
 ```
 
 `POST …/paymaster/sign` returns **`paymasterAndData`** (paymaster address + encoded **`paymasterData`** + **65-byte ECDSA** from **`VERIFYING_SIGNER`**). Your snippet is a successful **developer-sponsored** quote (`token` and **`receiver`** zero = native sponsor path): **`validUntil` / `validAfter`** bound signature freshness; **`success: true`** means the bundler can attach this blob to the UserOp and submit.
